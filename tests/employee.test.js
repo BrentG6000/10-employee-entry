@@ -7,9 +7,9 @@ describe("Employee", () => {
 
             // Verify that the new object has the correct properties
             expect(employee.getName()).toEqual("Sarah");
-            expect(employee.getId).toEqual(0001);
+            expect(employee.getId()).toEqual(0001);
             expect(employee.getEmail()).toEqual("sarah@acme.com");
-            expect(employee.getRole).toEqual("Employee");
+            expect(employee.getRole()).toEqual("Employee");
         });
 
         it("should throw an error if provided no arguments", () => {
@@ -34,7 +34,7 @@ describe("Employee", () => {
             const cb = () => new Employee("Sarah", 0001);
 
             // Define the error message that is expected to be thrown
-            const err = new Error("Expected parameter 'email' to be a string non-empty string");
+            const err = new Error("Expected parameter 'email' to be a non-empty string");
 
             // Verify that the correct error was thrown when the callback is executed
             expect(cb).toThrowError(err);
@@ -50,6 +50,13 @@ describe("Employee", () => {
         it("should throw an error if 'id' is not a number", () => {
             const cb = () => new Employee("Sarah", "0001", "sarah@acme.com");
             const err = new Error("Expected parameter 'id' to be a number");
+
+            expect(cb).toThrowError(err);
+        });
+
+        it("should throw an error if 'email' is not a string", () => {
+            const cb = () => new Employee("Sarah", "0001", sarah@acme.com);
+            const err = new Error("Expected parameter 'email' to be a non-empty string");
 
             expect(cb).toThrowError(err);
         });

@@ -6,7 +6,23 @@ const intern = require('./lib/intern');
 const manager = require('./lib/manager');
 let role = "manager";
 let employees = [];
-let questions = []; 
+let questions = [];
+const htmlStart =
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Employees</title>
+</head>
+<body>`
+const htmlEnd = 
+`</body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</html>`
 const menu = [
     {
         type: "list",
@@ -83,12 +99,22 @@ const internQuestions = [
 ];
 
 const handleInput = () => {
-    console.log("It worked!");
     for (let i = employees.length - 1; i > 0; i--) {
         employees[i].role = employees[i - 1].role;
     }
     employees[0].role = "manager";
-    console.log(employees);
+
+    // May want to change arrays to const
+    let employeeObjects = [];
+    let nameIdEmail = [];
+
+    // Working here
+    for (let i = 0; i < employees.length; i++) {
+        nameIdEmail = employees[i].name, employees[i].id, employees[i].email
+        if (employees[i].role == "manager") { 
+            employeeObjects.push(new Manager(employees[i].name, employees[i].id, employees[i].email));
+        }
+    }
 };
 
 const prompt = (questions) => {
@@ -123,3 +149,7 @@ const init = () => {
 };
 
 init();
+
+// Need to make objects from the prompt answers
+// Need to style index.html with bootstrap if possible
+// Need to get object info into index.html

@@ -18,7 +18,10 @@ const htmlStart =
     <link rel="stylesheet" href="./assets/css/style.css">
     <title>Employees</title>
 </head>
-<body>`
+<body>
+    <div class="jumbotron jumbotron-fluid bg-danger text-white">
+        <h1 class="display-4 text-center">My Team</h1>
+    </div>`
 const htmlEnd = 
 `</body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -106,15 +109,26 @@ const handleInput = () => {
 
     // May want to change arrays to const
     let employeeObjects = [];
-    let nameIdEmail = [];
+    let temp;
 
-    // Working here
     for (let i = 0; i < employees.length; i++) {
-        nameIdEmail = employees[i].name, employees[i].id, employees[i].email
-        if (employees[i].role == "manager") { 
-            employeeObjects.push(new Manager(employees[i].name, employees[i].id, employees[i].email));
+        if (employees[i].role == "manager") {
+            const [name, id, email, office] = Object.values(employees[i]);
+            temp = new manager(name, id, email, office);
+            employeeObjects.push(temp);
+        }
+        else if (employees[i].role == "engineer") {
+            const [ name, id, email, github ] = Object.values(employees[i]);
+            temp = new engineer(name, id, email, github);
+            employeeObjects.push(temp);
+        }
+        else {
+            const [ name, id, email, school ] = Object.values(employees[i]);
+            temp = new intern(name, id, email, school)
+            employeeObjects.push(temp);
         }
     }
+    console.log(employeeObjects);
 };
 
 const prompt = (questions) => {
@@ -144,12 +158,22 @@ const ask = () => {
     }
 }
 
+const createPage = () => {
+    // appendFile() takes in 3 arguments: path, data, and callback function
+    fs.writeFile('index.html', htmlStart, (err) =>
+        err ? console.error(err) : console.log('html added!')
+    );
+    fs.appendFile('index.html', htmlEnd, (err) =>
+        err ? console.error(err) : console.log('html added!')
+    );
+}
+
 const init = () => {
-    ask();
+    //ask();
+    createPage();
 };
 
 init();
 
-// Need to make objects from the prompt answers
 // Need to style index.html with bootstrap if possible
 // Need to get object info into index.html

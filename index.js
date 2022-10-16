@@ -1,13 +1,11 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-//const employee = require('./lib/employee');
-const engineer = require('./lib/engineer');
+const engineer = require('./lib/engineer'); // Classes needed for emplyee list
 const intern = require('./lib/intern');
 const manager = require('./lib/manager');
-let role = "manager";
-let employees = [];
-let questions = [];
-let employeeObjects = [];
+let role = "manager"; // Needed to select the correct questions for each employee type
+let employees = []; // Holds answers to questions
+let employeeObjects = []; // Holds employee objects
 const htmlStart =
 `<!DOCTYPE html>
 <html lang="en">
@@ -129,6 +127,12 @@ const internQuestions = [
     },
 ];
 
+/* Once the user exits the prompt of questions handleInput first runs a for loop to fix a flaw in the way
+the program saves roles to the employee list. When the user picks a role it is saved to that current answer
+array, not the next. So, if the user picks "engineer", for example, this loop pushes it to the next answer array
+so that the correct employee has role "engineer". The first role is always a manager. The next for loop
+destructures each array in the employees array and uses that info to create the correct object, which is then
+pushed to the employeeObjects array. */
 const handleInput = () => {
     for (let i = employees.length - 1; i > 0; i--) {
         employees[i].role = employees[i - 1].role;
@@ -158,6 +162,8 @@ const handleInput = () => {
     createPage();
 };
 
+/* Here questions are presented to the user and the answers are saved in the employees array. 
+role is then updated and ask() runs again. */
 const prompt = (questions) => {
     inquirer.prompt(questions).then((answers) => {
         employees.push(answers);
@@ -166,7 +172,10 @@ const prompt = (questions) => {
     })
 }
  
+/* role variable keeps track of employee type which is then used to present the correct questions
+for that employee type. The function repeats until role is "exit". */
 const ask = () => {
+    let questions = [];
     switch (role) {
         case "manager":
             questions = [...managerQuestions, ...menu]
@@ -185,10 +194,13 @@ const ask = () => {
     }
 }
 
+/* This function creates an index.html page in the dist folder using info from the employeeObjects array. */
 const createPage = () => {
-    let htmlCards = "";
-    let specialGet;
-    let pagebreak = "";
+    let htmlCards = ""; // will hold html for cards
+    let specialGet; // will hold values not shared by all objects
+    let pagebreak = ""; // will hold html for a page break after every three employee entries
+    
+    // This for loop creates a card for each employee
     for (let i = 0; i < employeeObjects.length; i++) {
         if ((i > 0) && (i % 3 == 0)) {
             pagebreak = `
@@ -215,11 +227,13 @@ const createPage = () => {
     }
 
     let html = htmlStart.concat(htmlCards, htmlEnd);
+
     fs.writeFile('./dist/index.html', html, (err) =>
         err ? console.error(err) : console.log('html page created!')
     )
 }
 
+// Starts program
 const init = () => {
     ask();
 };

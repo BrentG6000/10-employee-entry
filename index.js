@@ -7,6 +7,7 @@ const manager = require('./lib/manager');
 let role = "manager";
 let employees = [];
 let questions = [];
+let employeeObjects = [];
 const htmlStart =
 `<!DOCTYPE html>
 <html lang="en">
@@ -15,15 +16,34 @@ const htmlStart =
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./style.css">
     <title>Employees</title>
 </head>
 <body>
-    <div class="jumbotron jumbotron-fluid bg-danger text-white">
+    <section class="jumbotron jumbotron-fluid bg-danger text-white">
         <h1 class="display-4 text-center">My Team</h1>
-    </div>`
+    </section>
+    <main class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="card-deck">`
+const htmlCard1 = `
+                <div class="card text-center">
+                    <h2 class="card-header">`
+const htmlCard2 = `</h2>
+                    <div class="card-body">
+                        <h5 class="card-title">`
+                        
+const htmlCard3 =       `</h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>`
 const htmlEnd = 
-`</body>
+`           
+            </div>
+        </div>
+    </main>
+</body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </html>`
 const menu = [
@@ -108,7 +128,7 @@ const handleInput = () => {
     employees[0].role = "manager";
 
     // May want to change arrays to const
-    let employeeObjects = [];
+    
     let temp;
 
     for (let i = 0; i < employees.length; i++) {
@@ -128,7 +148,8 @@ const handleInput = () => {
             employeeObjects.push(temp);
         }
     }
-    console.log(employeeObjects);
+
+    //createPage();
 };
 
 const prompt = (questions) => {
@@ -159,13 +180,33 @@ const ask = () => {
 }
 
 const createPage = () => {
-    // appendFile() takes in 3 arguments: path, data, and callback function
-    fs.writeFile('index.html', htmlStart, (err) =>
+    let name1 = "Brent";
+    let name2 = "John";
+    let name3 = "Joe";
+    let id1 = 123;
+    let id2 = 124;
+    let id3 = 125;
+    let email1 = "brent@acme.com";
+    let email2 = "john@acme.com";
+    let email3 = "joe@acme.com";
+    let office = 301;
+    let github = "john6000";
+    let school = "Acme U";
+    let object1 = new manager(name1, id1, email1, office);
+    let object2 = new engineer(name2, id2, email2, github);
+    let object3 = new intern(name3, id3, email3, school);
+    employeeObjects = [object1, object2, object3];
+
+    let htmlCards = "";
+    for (let i = 0; i < employeeObjects.length; i++) {
+        htmlCards = htmlCards.concat(htmlCard1, `${employeeObjects[i].name}`, htmlCard2,
+            `${employeeObjects[i].getRole()}`, htmlCard3);
+    }
+
+    let html = htmlStart.concat(htmlCards, htmlEnd);
+    fs.writeFile('./dist/index.html', html, (err) =>
         err ? console.error(err) : console.log('html added!')
-    );
-    fs.appendFile('index.html', htmlEnd, (err) =>
-        err ? console.error(err) : console.log('html added!')
-    );
+    )
 }
 
 const init = () => {
@@ -175,5 +216,6 @@ const init = () => {
 
 init();
 
-// Need to style index.html with bootstrap if possible
+// Make sure the page looks good at all sizes
 // Need to get object info into index.html
+// <div class="w-100"></div>

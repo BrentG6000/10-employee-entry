@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const employee = require('./lib/employee');
+//const employee = require('./lib/employee');
 const engineer = require('./lib/engineer');
 const intern = require('./lib/intern');
 const manager = require('./lib/manager');
@@ -34,8 +34,16 @@ const htmlCard2 = `</h2>
                         <h5 class="card-title">`
                         
 const htmlCard3 =       `</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <ul class="list-group">
+                            <li class="list-group-item">ID: `
+                            
+const htmlCard4 =           `</li >
+                            <li class="list-group-item">Email: <a href = "mailto: `
+const htmlCard5 =           `">`
+const htmlCard6 =           `</a></li>
+                            <li class="list-group-item">`
+const htmlCard7 =        `</li >
+                        </ul>
                     </div>
                 </div>`
 const htmlEnd = 
@@ -126,8 +134,6 @@ const handleInput = () => {
         employees[i].role = employees[i - 1].role;
     }
     employees[0].role = "manager";
-
-    // May want to change arrays to const
     
     let temp;
 
@@ -149,7 +155,7 @@ const handleInput = () => {
         }
     }
 
-    //createPage();
+    createPage();
 };
 
 const prompt = (questions) => {
@@ -180,42 +186,42 @@ const ask = () => {
 }
 
 const createPage = () => {
-    let name1 = "Brent";
-    let name2 = "John";
-    let name3 = "Joe";
-    let id1 = 123;
-    let id2 = 124;
-    let id3 = 125;
-    let email1 = "brent@acme.com";
-    let email2 = "john@acme.com";
-    let email3 = "joe@acme.com";
-    let office = 301;
-    let github = "john6000";
-    let school = "Acme U";
-    let object1 = new manager(name1, id1, email1, office);
-    let object2 = new engineer(name2, id2, email2, github);
-    let object3 = new intern(name3, id3, email3, school);
-    employeeObjects = [object1, object2, object3];
-
     let htmlCards = "";
+    let specialGet;
+    let pagebreak = "";
     for (let i = 0; i < employeeObjects.length; i++) {
-        htmlCards = htmlCards.concat(htmlCard1, `${employeeObjects[i].name}`, htmlCard2,
-            `${employeeObjects[i].getRole()}`, htmlCard3);
+        if ((i > 0) && (i % 3 == 0)) {
+            pagebreak = `
+            <div class="w-100"></div>`;
+        }
+        else {
+            pagebreak = "";
+        }
+
+        if (employeeObjects[i].constructor.name == 'Manager') {
+            specialGet = `Office number: ${employeeObjects[i].officeNumber}`;
+        }
+        else if (employeeObjects[i].constructor.name == 'Engineer') {
+            specialGet = `GitHub:<a href = "https://github.com/${employeeObjects[i].getGithub()}"> ${employeeObjects[i].getGithub()}</a>`;
+        }
+        else {
+            specialGet = `School: ${employeeObjects[i].getSchool()}`;
+        }
+
+        htmlCards = htmlCards.concat(pagebreak, htmlCard1, `${employeeObjects[i].name}`, htmlCard2,
+            `${employeeObjects[i].getRole()}`, htmlCard3, `${employeeObjects[i].getId()}`,
+            htmlCard4, `${employeeObjects[i].getEmail()}`, htmlCard5, `${employeeObjects[i].getEmail()}`,
+            htmlCard6, specialGet, htmlCard7);
     }
 
     let html = htmlStart.concat(htmlCards, htmlEnd);
     fs.writeFile('./dist/index.html', html, (err) =>
-        err ? console.error(err) : console.log('html added!')
+        err ? console.error(err) : console.log('html page created!')
     )
 }
 
 const init = () => {
-    //ask();
-    createPage();
+    ask();
 };
 
 init();
-
-// Make sure the page looks good at all sizes
-// Need to get object info into index.html
-// <div class="w-100"></div>
